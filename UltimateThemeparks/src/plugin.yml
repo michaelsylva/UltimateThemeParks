@@ -1,0 +1,7 @@
+main: me.toaster.ultimatethemeparks.UTPCore
+name: UltimateThemeparks
+version: 1.2.5
+description: Handles Themepark functions
+author: Mr_toaster111(Mike)
+commands:
+ utp:
