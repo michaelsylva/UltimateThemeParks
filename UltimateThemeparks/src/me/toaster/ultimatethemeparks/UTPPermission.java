@@ -10,7 +10,11 @@ public enum UTPPermission {
 	UTP_ITEM_BUY_SIGNPLACE("utp.item.buy.signplace"),
 	
 	/** Commands */
-	UTP_COMMANDS_RIDE("utp.commands.ride");
+	UTP_COMMANDS_RIDE("utp.commands.ride"),
+	UTP_COMMANDS_BACKUP("utp.commands.backup"),
+	
+	/** General staff */
+	UTP_STAFF("utp.staff");
 	
 	private String val;
 	UTPPermission(String val) {

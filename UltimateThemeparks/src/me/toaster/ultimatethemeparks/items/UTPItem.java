@@ -1,6 +1,10 @@
 package me.toaster.ultimatethemeparks.items;
 
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import me.toaster.ultimatethemeparks.balloons.Balloon;
 import me.toaster.ultimatethemeparks.balloons.BalloonManager;
@@ -15,7 +19,22 @@ public class UTPItem {
 	
 	public enum ItemType{
 		BALLOON,
-		WAND
+		WAND;
+	}
+	
+	public static boolean isSpecialItem(ItemStack is) {
+		if(is!=null) {
+			if(is.hasItemMeta()) {
+				ItemMeta meta = is.getItemMeta();
+				String name = ChatColor.stripColor(meta.getDisplayName());
+				if(name.contains("balloon")) {
+					if(is.getType()==Material.SKULL_ITEM) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 	
 	public static boolean isValidType(String type) {
@@ -37,17 +56,36 @@ public class UTPItem {
 	}
 	
 	//TODO Already have that item...
-	public boolean give(Player p, String data) {
+	public ItemGiveResult give(Player p, String data) {
 		if(type==ItemType.BALLOON) {
 			if(BalloonManager.getBalloonByName(data)!=null) {
 				Balloon b = BalloonManager.getBalloonByName(data);
-				b.giveBalloon(p);
-				return true;
+				if(!b.hasBalloon(p)) {
+					b.giveBalloon(p);
+					return ItemGiveResult.SUCCESS;
+				}else {
+					return ItemGiveResult.ALREADY_HAVE;
+				}
 			}
 		}else if(type==ItemType.WAND) {
 			//TODO wand
 		}
-		return false;
+		return ItemGiveResult.UNKNOWN_ITEM;
 	}
 	
+	public enum ItemGiveResult{
+		SUCCESS(ChatColor.GREEN+"Here you go!"),
+		INVENTORY_FULL(ChatColor.RED+"Your inventory is full!"),
+		UNKNOWN_ITEM(ChatColor.RED+"Unable to retrieve item"),
+		ALREADY_HAVE(ChatColor.RED+"You already have this item!");
+		
+		String msg;
+		ItemGiveResult(String msg) {
+			this.msg = msg;
+		}
+		
+		public String getMessage() {
+			return this.msg;
+		}
+	}
 }

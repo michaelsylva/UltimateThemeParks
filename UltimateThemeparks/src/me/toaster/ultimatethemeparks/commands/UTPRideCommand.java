@@ -65,6 +65,10 @@ public class UTPRideCommand extends CommandHandler{
 				}else if(args[1].equalsIgnoreCase("list")) {
 					printRideList(p);
 				}
+			}else {
+				p.sendMessage(ChatColor.RED+""+ChatColor.BOLD+"Unrecognized "+ChatColor.RESET+ChatColor.GOLD+"Valid commands:");
+				p.sendMessage(ChatColor.GOLD+"/utp ride operate - displays operator GUI");
+				p.sendMessage(ChatColor.GOLD+"/utp ride list - lists current rides on the server");
 			}
 		}
 	}

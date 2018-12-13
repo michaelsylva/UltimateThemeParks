@@ -2,7 +2,6 @@ package me.toaster.ultimatethemeparks;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -10,13 +9,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
-import me.toaster.ultimatethemeparks.balloons.Balloon.ActiveBalloon;
-import me.toaster.ultimatethemeparks.builder.BuilderListener;
 import me.toaster.ultimatethemeparks.balloons.BalloonListener;
 import me.toaster.ultimatethemeparks.balloons.BalloonManager;
+import me.toaster.ultimatethemeparks.builder.BuilderListener;
 import me.toaster.ultimatethemeparks.commands.UTPCommand;
 import me.toaster.ultimatethemeparks.entities.CEntityBat;
-import me.toaster.ultimatethemeparks.events.UTPPlayerJoin;
+import me.toaster.ultimatethemeparks.entities.CEntityManager;
+import me.toaster.ultimatethemeparks.events.UTPPlayerEvents;
 import me.toaster.ultimatethemeparks.flatrides.FRFrisbee;
 import me.toaster.ultimatethemeparks.items.ItemListener;
 import me.toaster.ultimatethemeparks.queue.QueueListener;
@@ -28,7 +27,14 @@ import me.toaster.ultimatethemeparks.scheduler.ActionBarScheduler;
 import me.toaster.ultimatethemeparks.utils.InventoryUtils;
 import me.toaster.ultimatethemeparks.utils.NMSUtils;
 
+/**
+ * Main class for UltimateThemeParks...
+ * @author Michael Sylva
+ *
+ */
 public class UTPCore extends JavaPlugin{
+	
+	//TODO ADD TRASH TO THROW ITEMS TO
 	
 	public static File QUEUE_DIR;
 	
@@ -40,6 +46,7 @@ public class UTPCore extends JavaPlugin{
 	public static ArrayList<BukkitTask> tasks = new ArrayList<BukkitTask>();
 	
 	public void onEnable() {
+		
 		this.makeDirectories();
 		this.initCustomEntities();
 		this.initCommands();
@@ -59,6 +66,7 @@ public class UTPCore extends JavaPlugin{
 	
 	public void onDisable() {
 		this.clearUnwantedEntities();
+		CEntityManager.twoFactorClear();
 		this.disableRides();
 		this.fixAllInventories();
 		this.saveData();
@@ -86,7 +94,7 @@ public class UTPCore extends JavaPlugin{
 		Bukkit.getPluginManager().registerEvents(new QueueListener(), this);
 		Bukkit.getPluginManager().registerEvents(new BalloonListener(), this);
 		Bukkit.getPluginManager().registerEvents(new BuilderListener(), this);
-		Bukkit.getPluginManager().registerEvents(new UTPPlayerJoin(), this);
+		Bukkit.getPluginManager().registerEvents(new UTPPlayerEvents(), this);
 		Bukkit.getPluginManager().registerEvents(new ItemListener(), this);
 	}
 	
