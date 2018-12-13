@@ -12,6 +12,7 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import me.toaster.ultimatethemeparks.UTPPermission;
+import me.toaster.ultimatethemeparks.items.UTPItem.ItemGiveResult;
 import me.toaster.ultimatethemeparks.utils.ParseUtils;
 
 public class ItemListener implements Listener{
@@ -57,11 +58,8 @@ public class ItemListener implements Listener{
 						String name = ChatColor.stripColor(s.getLine(2));
 						if(UTPItem.isValidType(type)) {
 							UTPItem item = UTPItem.createByType(type);
-							if(item.give(p, name)) {
-								p.sendMessage(ChatColor.GREEN+"Here you go!");
-							}else {
-								p.sendMessage(ChatColor.RED+"Unable to retrieve item.");
-							}
+							ItemGiveResult result = item.give(p, name);
+							p.sendMessage(result.getMessage());
 						}
 					}
 				}

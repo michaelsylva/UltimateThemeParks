@@ -3,6 +3,7 @@ package me.toaster.ultimatethemeparks.balloons;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -66,7 +67,7 @@ public class BalloonManager extends BukkitRunnable{
 	}
 
 	public static boolean hasActiveBalloon(Player p) {
-		return activeBalloons.containsKey(p);
+		return activeBalloons.containsKey(p) && activeBalloons.get(p).isFlying==false;
 	}
 	
 	public static ActiveBalloon getActiveBalloon(Player p) {
@@ -104,13 +105,39 @@ public class BalloonManager extends BukkitRunnable{
 			if(activeBalloons.size()>0) {
 				for(Player p : activeBalloons.keySet()) {
 					ActiveBalloon balloon = activeBalloons.get(p);
-					Vector to = p.getLocation().add(0, BalloonManager.HEIGHT, 0).toVector();
-					Vector from = balloon.getLocation().toVector();
-					Vector move = to.subtract(from);
-					
-					balloon.twistHead();
-					balloon.balloon.move(EnumMoveType.SELF, move.getX(), move.getY(), move.getZ());
-					balloon.joinHolderAndBalloon();
+					if(balloon.isFlying) {
+						if(balloon.flyingTicks<200) {
+							balloon.balloon.move(EnumMoveType.SELF, 0, 0.25, 0);
+							balloon.twistHead();
+							balloon.joinHolderAndBalloon();
+							balloon.flyingTicks++;
+						}else {
+							balloon.despawn();
+							despawnedBalloon(p);
+						}
+					}else {
+						
+						Location balloonLoc = balloon.getLocation();
+						Location pLoc = p.getLocation();
+						if(pLoc.getWorld().equals(balloonLoc.getWorld())) {
+							double dist = pLoc.distance(balloonLoc);
+							if(dist>10.0) {
+								balloon.setLocation(pLoc.clone().add(0, BalloonManager.HEIGHT, 0));
+							}
+						}else {
+							balloon.despawn();
+							BalloonManager.despawnedBalloon(p);
+						}
+						
+						
+						Vector to = p.getLocation().add(0, BalloonManager.HEIGHT, 0).toVector();
+						Vector from = balloon.getLocation().toVector();
+						Vector move = to.subtract(from);
+						
+						balloon.twistHead();
+						balloon.balloon.move(EnumMoveType.SELF, move.getX(), move.getY(), move.getZ());
+						balloon.joinHolderAndBalloon();
+					}
 				}
 			}
 		}

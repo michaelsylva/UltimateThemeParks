@@ -16,6 +16,7 @@ public class CEntityBat extends EntityBat implements CEntity{
 		super(world);
 		setSilent(true);
 		setNoAI(true);
+		CEntityManager.add(this);
 	}
 	
 	public CEntityBat(Location l) {

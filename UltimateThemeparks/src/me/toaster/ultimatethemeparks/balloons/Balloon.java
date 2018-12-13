@@ -12,12 +12,13 @@ import org.bukkit.util.Vector;
 import me.toaster.ultimatethemeparks.entities.CEntityArmorstand;
 import me.toaster.ultimatethemeparks.entities.CEntityBat;
 import me.toaster.ultimatethemeparks.utils.Cooldown;
+import me.toaster.ultimatethemeparks.utils.ItemUtils;
 import me.toaster.ultimatethemeparks.utils.PlayerUtils;
 
 public class Balloon {
 
 	String name, skin;
-	
+
 	//TODO export and create balloons
 	public Balloon(String name, String skin) {
 		this.name = name;
@@ -28,7 +29,7 @@ public class Balloon {
 		ItemStack skull = getItem();
 		PlayerUtils.giveItem(p, skull);
 	}
-	
+
 	public ItemStack getItem() {
 		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short)3);
 		SkullMeta meta = (SkullMeta) skull.getItemMeta();
@@ -48,7 +49,7 @@ public class Balloon {
 			p.sendMessage(ChatColor.RED+"You cannot use your balloon for another " + secondsLeft + " seconds");
 		}
 	}
-	
+
 	public void despawn(Player p) {
 		if(BalloonManager.hasActiveBalloon(p)) {
 			ActiveBalloon balloon = BalloonManager.getActiveBalloon(p);
@@ -56,63 +57,98 @@ public class Balloon {
 			BalloonManager.despawnedBalloon(p);
 		}
 	}
-	
+
+	public boolean hasBalloon(Player p) {
+		for(ItemStack is : p.getInventory().getContents()) {
+			if(is!=null) {
+				if(ItemUtils.isSimilar(is,this.getItem())) {
+					System.out.println("Its similar!");
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	@Override
 	public String toString() {
 		return "Balloon{name:"+this.name+", skin:"+this.skin+"}";
 	}
-	
+
 	public class ActiveBalloon{
 		Balloon type;
 		Player p;
 		CEntityArmorstand balloon;
 		CEntityBat holder;
-		
+		CEntityBat holder2;
+		public boolean isFlying = false;
+		public int flyingTicks = 0;
+
 		public ActiveBalloon(Player p, Balloon type) {
 			this.p = p;
 			this.type = type;
 			this.create();
 		}
-		
+
 		public void create() {
 			holder = new CEntityBat(p.getLocation().clone().add(0, BalloonManager.HEIGHT+1, 0));
 			balloon = new CEntityArmorstand(p.getLocation().clone().add(0, BalloonManager.HEIGHT, 0));
-			
+
 			holder.setBatInvisible();
 			holder.setNoAI(true);
 			balloon.setInvisible(true);
 			holder.setLeashHolder(this.p);
-			
+
 			balloon.setHead(this.type.getItem());
 		}
 		
+		public void fly() {
+			this.holder2 = new CEntityBat(p.getLocation());
+			this.holder2.setBatInvisible();
+			this.holder2.setNoAI(true);
+			this.holder2.setInvisible(true);
+			this.holder.setLeashHolder(this.holder2.getBukkitBat());
+			this.isFlying = true;
+		}
+
 		public Location getLocation() {
 			return this.balloon.getLocation();
 		}
 
+		public void setLocation(Location l) {
+			this.balloon.setLocation(l.getX(), l.getY(), l.getZ(), 0.0f, 0.0f);
+		}
+		
 		public void setVelocity(Vector v) {
 			balloon.getBukkitArmorstand().setVelocity(v);
 		}
-		
+
 		public void twistHead() {
 			ArmorStand bukkitAS = balloon.getBukkitArmorstand();
 			bukkitAS.setHeadPose(bukkitAS.getHeadPose().setY(bukkitAS.getHeadPose().getY()+BalloonManager.SPIN_SPEED));
 		}
-		
+
 		public void joinHolderAndBalloon() {
 			holder.getBukkitEntity().teleport(balloon.getBukkitArmorstand().getLocation().add(0, 1, 0));
+			if(holder2!=null) {
+				holder2.getBukkitEntity().teleport(balloon.getBukkitArmorstand().getLocation().subtract(0, 2, 0));
+			}
 		}
-		
+
 		public void despawn(){
 			if(holder!=null) {
 				holder.remove();
 			}
-			
+
 			if(balloon!=null) {
 				balloon.remove();
 			}
+			
+			if(holder2!=null) {
+				holder2.remove();
+			}
 		}
-		
+
 	}
-	
+
 }

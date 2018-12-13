@@ -14,6 +14,7 @@ public class CEntityMinecart extends EntityMinecartRideable implements CEntity{
 	
 	public CEntityMinecart(World world) {
 		super(world);
+		CEntityManager.add(this);
 	}
 	
 	public CEntityMinecart(Location l) {

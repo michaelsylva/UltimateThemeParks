@@ -16,6 +16,7 @@ public class CEntityArmorstand extends EntityArmorStand implements CEntity{
 	
 	public CEntityArmorstand(World world) {
 		super(world);
+		CEntityManager.add(this);
 	}
 
 	public CEntityArmorstand(Location l) {

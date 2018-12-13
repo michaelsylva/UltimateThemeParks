@@ -19,6 +19,10 @@ public class UTPCommand implements CommandExecutor{
 						new UTPBuilderCommand().commandReceivedPlayer(p, cmd, label, args);
 					}else if(args[0].equalsIgnoreCase("balloon")) {
 						new UTPBalloonCommand().commandReceivedPlayer(p,cmd,label,args);
+					}else if(args[0].equalsIgnoreCase("backup")) {
+						new UTPBackupCommand().commandReceivedPlayer(p, cmd, label, args);
+					}else if(args[0].equalsIgnoreCase("show")) {
+						new UTPShowCommand().commandReceivedPlayer(p, cmd, label, args);
 					}
 				}
 			}

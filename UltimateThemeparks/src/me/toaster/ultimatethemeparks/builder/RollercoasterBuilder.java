@@ -58,6 +58,7 @@ public class RollercoasterBuilder extends UTPBuilder{
 			}
 		}else {
 			p.sendMessage(ChatColor.RED+"Invalid answer!");
+			ask();
 		}
 	}
 	

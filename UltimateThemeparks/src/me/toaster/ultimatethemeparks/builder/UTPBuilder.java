@@ -42,7 +42,7 @@ public abstract class UTPBuilder{
 
 	public boolean isValidAnswer(String message) {
 		Question q = questions.element();
-		if(q.validAnswers.length>0) {
+		if(q.validAnswers!= null && q.validAnswers.length>0) {
 			for(String s : q.validAnswers) {
 				if(message.equalsIgnoreCase(s)) {
 					return true;
@@ -57,7 +57,7 @@ public abstract class UTPBuilder{
 	public abstract void ask();
 
 	public abstract void answer(String message);
-	
+
 	public abstract void build();
 
 	/** Static methods to be accessed from anywhere 
@@ -108,9 +108,11 @@ public abstract class UTPBuilder{
 
 		public void sendQuestion(Player p) {
 			p.sendMessage(ChatColor.GOLD+question);
-			if(validAnswers.length>0 && displayOptions) {
-				for(String valid : validAnswers) {
-					p.sendMessage(ChatColor.GRAY+""+ChatColor.BOLD+StringUtils.capitalise(valid));
+			if(validAnswers!=null) {
+				if(validAnswers.length>0 && displayOptions) {
+					for(String valid : validAnswers) {
+						p.sendMessage(ChatColor.GRAY+""+ChatColor.BOLD+StringUtils.capitalise(valid));
+					}
 				}
 			}
 		}

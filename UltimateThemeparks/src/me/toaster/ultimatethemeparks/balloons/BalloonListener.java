@@ -26,7 +26,11 @@ public class BalloonListener implements Listener{
 
 		
 		if(b1!=null) {
-			b1.spawn(p);
+			if(!p.isInsideVehicle()) {
+				b1.spawn(p);
+			}else {
+				p.sendMessage(ChatColor.RED+"You cannot hold a balloon on a ride!");
+			}
 		}
 
 	}
