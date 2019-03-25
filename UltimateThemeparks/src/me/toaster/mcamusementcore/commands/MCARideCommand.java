@@ -66,8 +66,8 @@ public class MCARideCommand extends CommandHandler{
 				}
 			}else {
 				p.sendMessage(ChatColor.RED+""+ChatColor.BOLD+"Unrecognized "+ChatColor.RESET+ChatColor.GOLD+"Valid commands:");
-				p.sendMessage(ChatColor.GOLD+"/utp ride operate - displays operator GUI");
-				p.sendMessage(ChatColor.GOLD+"/utp ride list - lists current rides on the server");
+				p.sendMessage(ChatColor.GOLD+"/mca ride operate - displays operator GUI");
+				p.sendMessage(ChatColor.GOLD+"/mca ride list - lists current rides on the server");
 			}
 		}
 	}

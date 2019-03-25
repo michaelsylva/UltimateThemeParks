@@ -25,7 +25,7 @@ public class MCAShowCommand extends CommandHandler{
 						p.sendMessage(ChatColor.RED+"That show already exists!");
 					}
 				}else {
-					p.sendMessage(ChatColor.RED+"Incorrect arguments. /utp show create <showname>");
+					p.sendMessage(ChatColor.RED+"Incorrect arguments. /mca show create <showname>");
 				}
 			}else if(todo.equalsIgnoreCase("edit")) {
 				if(ShowManager.isEditting(p)) {
@@ -40,7 +40,7 @@ public class MCAShowCommand extends CommandHandler{
 							p.sendMessage(ChatColor.RED+"This show doesnt exist. Create it using /utp show create <showname>");
 						}
 					}else {
-						p.sendMessage(ChatColor.RED+"Incorrect arguments: /utp show edit <showname>");
+						p.sendMessage(ChatColor.RED+"Incorrect arguments: /mca show edit <showname>");
 					}
 				}
 			}else if(todo.equalsIgnoreCase("delete")) {

@@ -9,7 +9,7 @@ public class MCACommand implements CommandExecutor{
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if(cmd.getLabel().equalsIgnoreCase("utp")) {
+		if(cmd.getLabel().equalsIgnoreCase("mca")) {
 			if(sender instanceof Player) {
 				Player p = (Player) sender;
 				if(args.length>0) {

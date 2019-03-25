@@ -24,7 +24,7 @@ public class ShowScheduler extends BukkitRunnable{
 
 	public void start() {
 		ShowManager.addRunningShow(this);
-		this.task = this.runTaskTimer(MCACore.UTP_CORE, 1, 1);
+		this.task = this.runTaskTimer(MCACore.MCA_CORE, 1, 1);
 	}
 
 	public void stop() {

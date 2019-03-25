@@ -17,6 +17,10 @@ import me.toaster.mcamusementcore.utils.PlayerUtils;
 
 public class Balloon {
 
+	/*
+	 * TODO: issue with balloon string. Cannot see string if balloon is taken out when not in range of player? I think. My guess.
+	 */
+	
 	String name, skin;
 
 	//TODO export and create balloons

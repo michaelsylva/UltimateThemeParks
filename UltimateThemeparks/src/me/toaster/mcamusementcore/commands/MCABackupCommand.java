@@ -24,7 +24,7 @@ public class MCABackupCommand extends CommandHandler{
 	@Override
 	public void commandReceivedPlayer(Player p, Command cmd, String label, String[] args) {
 		if(p.hasPermission(MCAPermission.UTP_COMMANDS_BACKUP.getValue())) {
-			File dataFolder = MCACore.UTP_CORE.getDataFolder();
+			File dataFolder = MCACore.MCA_CORE.getDataFolder();
 			World w = p.getWorld();
 			Format formatter = new SimpleDateFormat("MM-dd-yyyy");
 			String s = formatter.format(new Date());
@@ -32,7 +32,7 @@ public class MCABackupCommand extends CommandHandler{
 			final File destDir = new File(dataFolder.getPath() + File.separator + "Backups" + File.separator + s);
 			MessageUtils.messageStaff(ChatColor.LIGHT_PURPLE+ "" + p.getName() + " is backing up the map! Please do not reload!");
 			
-			Bukkit.getScheduler().runTaskAsynchronously(MCACore.UTP_CORE, new Runnable() {
+			Bukkit.getScheduler().runTaskAsynchronously(MCACore.MCA_CORE, new Runnable() {
 				@Override
 				public void run() {
 

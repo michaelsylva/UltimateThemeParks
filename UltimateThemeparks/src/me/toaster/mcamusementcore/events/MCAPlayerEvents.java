@@ -27,6 +27,9 @@ public class MCAPlayerEvents implements Listener{
 		Player p = e.getPlayer();
 		ActionBarMessage msg = new ActionBarMessage(ChatColor.AQUA+"Welcome to "+MCACore.serverName + "! - " + ChatColor.ITALIC+MCACore.serverMotto, 10, 80, "join");
 		ActionBarScheduler.setActionBar(p, msg);
+		if(p.isOp()) {
+			p.sendMessage(ChatColor.GREEN + "You are running " + MCACore.MCA_CORE.getName() + " v" +MCACore.MCA_CORE.getDescription().getVersion() + " - " + ChatColor.BOLD+"Report any bugs to Amids_ or Mr_toaster111.");
+		}
 	}
 	
 	@EventHandler
