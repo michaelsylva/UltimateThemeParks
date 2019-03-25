@@ -1,7 +1,8 @@
-main: me.toaster.ultimatethemeparks.UTPCore
-name: UltimateThemeparks
+main: me.toaster.mcamusementcore.MCACore
+name: McAmusementCore
 version: 1.2.5
 description: Handles Themepark functions
 author: Mr_toaster111(Mike)
+api-version: 1.13
 commands:
- utp:
+ mca:
