@@ -1,22 +1,28 @@
 package me.toaster.mcamusementcore.entities;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_13_R2.CraftWorld;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.Entity;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import me.toaster.mcamusementcore.MCACore;
+import me.toaster.mcamusementcore.events.CEntityUnloadEvent;
 import net.minecraft.server.v1_13_R2.EntityBat;
+import net.minecraft.server.v1_13_R2.NBTTagCompound;
 import net.minecraft.server.v1_13_R2.World;
 
 public class CEntityBat extends EntityBat implements CEntity{
 
+	//FIXED ISSUE WITH NOT BEING ABLE TO REMOVE 3/26/19
+	
 	public CEntityBat(World world) {
 		super(world);
 		setSilent(true);
 		setNoAI(true);
-		CEntityManager.add(this);
 	}
 	
 	public CEntityBat(Location l) {
@@ -25,6 +31,8 @@ public class CEntityBat extends EntityBat implements CEntity{
 		((CraftWorld)l.getWorld()).getHandle().addEntity(this);
 		setSilent(true);
 		setNoAI(true);
+		CEntityManager.add(new CEntityInstance(this));
+		this.getBukkitEntity().setMetadata("centity", new FixedMetadataValue(MCACore.getPlugin(MCACore.class), true));
 	}
 	
 	public void setLeashHolder(Entity e) {
@@ -67,4 +75,17 @@ public class CEntityBat extends EntityBat implements CEntity{
 	public Location getLocation() {
 		return this.getBukkitEntity().getLocation();
 	}
+	
+	@Override
+	public boolean c(NBTTagCompound nbttagcompound) {
+		CEntityUnloadEvent event = new CEntityUnloadEvent(this);
+		Bukkit.getPluginManager().callEvent(event);
+		return super.c(nbttagcompound);
+	}
+
+	@Override
+	public void setStarting(Location starting) {
+		//
+	}
+
 }

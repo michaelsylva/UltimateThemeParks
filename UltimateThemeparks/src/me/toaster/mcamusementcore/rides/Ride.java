@@ -14,6 +14,9 @@ import me.toaster.mcamusementcore.entities.CEntity;
  */
 public abstract class Ride{
 
+	//TODO Ride needs to be open or closed accessible by the operate menu
+	//TODO Ride needs to have an arrayList of trains with an arraylist of CEntities (cars)...
+	
 	//TODO export and create rides
 	
 	public ArrayList<CEntity> entities = new ArrayList<CEntity>();

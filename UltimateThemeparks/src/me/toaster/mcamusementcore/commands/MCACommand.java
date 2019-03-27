@@ -23,6 +23,8 @@ public class MCACommand implements CommandExecutor{
 						new MCABackupCommand().commandReceivedPlayer(p, cmd, label, args);
 					}else if(args[0].equalsIgnoreCase("show")) {
 						new MCAShowCommand().commandReceivedPlayer(p, cmd, label, args);
+					}else if(args[0].equalsIgnoreCase("debug")) {
+						new MCADebugCommand().commandReceivedPlayer(p, cmd, label, args);
 					}
 				}
 			}

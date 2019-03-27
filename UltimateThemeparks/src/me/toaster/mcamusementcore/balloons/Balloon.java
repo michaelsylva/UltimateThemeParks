@@ -1,8 +1,10 @@
 package me.toaster.mcamusementcore.balloons;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -14,13 +16,20 @@ import me.toaster.mcamusementcore.entities.CEntityBat;
 import me.toaster.mcamusementcore.utils.Cooldown;
 import me.toaster.mcamusementcore.utils.ItemUtils;
 import me.toaster.mcamusementcore.utils.PlayerUtils;
+import net.minecraft.server.v1_13_R2.ChatComponentText;
+import net.minecraft.server.v1_13_R2.PacketPlayOutAttachEntity;
+import net.minecraft.server.v1_13_R2.PacketPlayOutEntityDestroy;
 
 public class Balloon {
 
 	/*
 	 * TODO: issue with balloon string. Cannot see string if balloon is taken out when not in range of player? I think. My guess.
 	 */
-	
+
+	/*
+	 * TODO: add ability to make all players balloons go up...
+	 */
+
 	String name, skin;
 
 	//TODO export and create balloons
@@ -97,21 +106,39 @@ public class Balloon {
 		public void create() {
 			holder = new CEntityBat(p.getLocation().clone().add(0, BalloonManager.HEIGHT+1, 0));
 			balloon = new CEntityArmorstand(p.getLocation().clone().add(0, BalloonManager.HEIGHT, 0));
+			balloon.setAsBalloon(this);
 
 			holder.setBatInvisible();
+			holder.getBukkitBat().setPersistent(false);
 			holder.setNoAI(true);
+			holder.setCustomName(new ChatComponentText("holder1"));
+			holder.setCustomNameVisible(true);
 			balloon.setInvisible(true);
-			holder.setLeashHolder(this.p);
+			PacketPlayOutAttachEntity attach = new PacketPlayOutAttachEntity(this.holder, ((CraftPlayer)p).getHandle());
+			for(Player all : Bukkit.getOnlinePlayers()) {
+				CraftPlayer cP = (CraftPlayer) all;
+				cP.getHandle().playerConnection.sendPacket(attach);
+			}
 
 			balloon.setHead(this.type.getItem());
 		}
-		
+
 		public void fly() {
 			this.holder2 = new CEntityBat(p.getLocation());
+			this.holder2.getBukkitBat().setPersistent(false);
 			this.holder2.setBatInvisible();
 			this.holder2.setNoAI(true);
-			this.holder2.setInvisible(true);
-			this.holder.setLeashHolder(this.holder2.getBukkitBat());
+			//this.holder2.setInvisible(true);
+			holder2.setCustomName(new ChatComponentText("holder2"));
+			holder2.setCustomNameVisible(true);
+			//this.holder.setLeashHolder(this.holder2.getBukkitBat());
+			
+			PacketPlayOutAttachEntity attach = new PacketPlayOutAttachEntity(this.holder, this.holder2);
+			for(Player all : Bukkit.getOnlinePlayers()) {
+				CraftPlayer cP = (CraftPlayer) all;
+				cP.getHandle().playerConnection.sendPacket(attach);
+			}
+
 			this.isFlying = true;
 		}
 
@@ -122,7 +149,7 @@ public class Balloon {
 		public void setLocation(Location l) {
 			this.balloon.setLocation(l.getX(), l.getY(), l.getZ(), 0.0f, 0.0f);
 		}
-		
+
 		public void setVelocity(Vector v) {
 			balloon.getBukkitArmorstand().setVelocity(v);
 		}
@@ -139,16 +166,20 @@ public class Balloon {
 			}
 		}
 
+		//Despawn is different whether holder 2 is being used or not....
 		public void despawn(){
+
 			if(holder!=null) {
+				System.out.println("holder1 clear");
 				holder.remove();
 			}
 
 			if(balloon!=null) {
 				balloon.remove();
 			}
-			
+
 			if(holder2!=null) {
+				System.out.println("holder2 clear");
 				holder2.remove();
 			}
 		}

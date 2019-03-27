@@ -31,6 +31,15 @@ import net.minecraft.server.v1_13_R2.Vector3f;
  * @author Michael Sylva
  *
  */
+
+/**
+ * Deprecated. Rides currently are not supported that use seperate arrays to store
+ * ride vehicles. The only storage that can be used right now is the Ride->entities list.
+ * This is because of the re-referencing.
+ * @author Michael Sylva
+ *
+ */
+@Deprecated
 public class RollercoasterAuto extends Ride{
 
 	int length;
