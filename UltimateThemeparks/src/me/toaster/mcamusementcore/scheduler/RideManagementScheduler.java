@@ -7,6 +7,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.toaster.mcamusementcore.entities.CEntity;
+import me.toaster.mcamusementcore.entities.CEntityMinecart;
 import me.toaster.mcamusementcore.rides.Ride;
 
 /**
@@ -21,18 +22,25 @@ public class RideManagementScheduler extends BukkitRunnable{
 
 	@Override
 	public void run() {
-		
+
 		if(Ride.rides.size()>0) {
 			for(Ride r : Ride.rides) {
 				ArrayList<CEntity> entities = r.entities;
+				//Bukkit.broadcastMessage("Ride: " + r.getRideName() + " entities: " + r.entities.size());
 				for(int i = 0; i<entities.size(); i++) {
-					if(entities.get(i).getBukkitEntity().isDead()) {
-						//Do something
+					CEntity ent = entities.get(i);
+					if(ent instanceof CEntityMinecart) {
+						CEntityMinecart cem = (CEntityMinecart) ent;
+						if(!cem.isAlive()) {
+							if(r.isSpawned()) {
+								//Bukkit.broadcastMessage("Something is very wrong with the ride : " + r);
+							}
+						}
 					}
 				}
 			}
 		}
-		
+
 	}
-	
+
 }

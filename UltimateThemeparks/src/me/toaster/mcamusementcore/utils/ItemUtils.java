@@ -1,8 +1,10 @@
 package me.toaster.mcamusementcore.utils;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 public class ItemUtils {
 
@@ -33,5 +35,14 @@ public class ItemUtils {
 			}
 		}
 		return false;
+	}
+	
+	public static ItemStack getHeadItem(String name) {
+		ItemStack skull = new ItemStack(Material.PLAYER_HEAD, 1, (short)3);
+		SkullMeta meta = (SkullMeta) skull.getItemMeta();
+		meta.setOwner(name);
+		meta.setDisplayName(ChatColor.LIGHT_PURPLE + name + " balloon");
+		skull.setItemMeta(meta);
+		return skull;
 	}
 }

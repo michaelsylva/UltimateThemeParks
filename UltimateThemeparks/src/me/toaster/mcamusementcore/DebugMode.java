@@ -30,6 +30,7 @@ public class DebugMode {
 		for(Player p : inDebugMode) {
 			p.sendMessage(msg);
 		}
+		System.out.println("DEBUG(INFO): " + msg);
 	}
 	
 	public static boolean statusPlayer(Player p) {

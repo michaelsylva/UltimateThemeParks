@@ -1,22 +1,17 @@
 package me.toaster.mcamusementcore.entities;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_13_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_13_R2.entity.CraftMinecart;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
-import org.bukkit.plugin.Plugin;
 
 import me.toaster.mcamusementcore.MCACore;
-import me.toaster.mcamusementcore.events.CEntityLoadEvent;
 import me.toaster.mcamusementcore.events.CEntityUnloadEvent;
-import me.toaster.mcamusementcore.rides.Ride;
-import net.minecraft.server.v1_13_R2.ChatComponentText;
 import net.minecraft.server.v1_13_R2.DamageSource;
 import net.minecraft.server.v1_13_R2.Entity;
-import net.minecraft.server.v1_13_R2.EntityMinecartAbstract;
 import net.minecraft.server.v1_13_R2.EntityMinecartRideable;
+import net.minecraft.server.v1_13_R2.EntityPlayer;
 import net.minecraft.server.v1_13_R2.NBTTagCompound;
 import net.minecraft.server.v1_13_R2.World;
 
@@ -47,7 +42,20 @@ public class CEntityMinecart extends EntityMinecartRideable implements CEntity{
 	public void setPositionRotation(Location l) {
 		this.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
 	}
-
+	
+	@Override
+	protected boolean addPassenger(Entity entity) {
+		if(allowPassengers) {
+			super.addPassenger(entity);
+		}else {
+			if(entity instanceof EntityPlayer) {
+				EntityPlayer p = (EntityPlayer) entity;
+				p.getBukkitEntity().sendMessage(ChatColor.RED+"You cannot enter this ride");
+			}
+		}
+		return allowPassengers;
+	}
+	
 	@Override
 	public void remove() {
 		this.killEntity();

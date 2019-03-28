@@ -298,6 +298,9 @@ public class QueueObject extends BukkitRunnable implements UTPSerialize{
 				int playersMax = Integer.parseInt(delim[3]);
 				int seconds = Integer.parseInt(delim[4]);
 
+				if(Ride.getRideByName(rideName)==null) {
+					return null;
+				}
 				QueueObject qo = new QueueObject(Ride.getRideByName(rideName), l, seconds, playersIn, playersMax);
 				reader.close();
 				return qo;

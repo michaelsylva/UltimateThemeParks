@@ -27,6 +27,7 @@ public abstract class Ride{
 	 */
 	
 	//TODO add isOpen...
+	private boolean isOpen = true;
 	private boolean isRunning = false;
 	private boolean isSpawned = false;
 	
@@ -109,6 +110,14 @@ public abstract class Ride{
 
 	public void setSpawned(boolean isSpawned) {
 		this.isSpawned = isSpawned;
+	}
+	
+	public boolean isOpen() {
+		return isOpen;
+	}
+
+	public void setOpen(boolean isOpen) {
+		this.isOpen = isOpen;
 	}
 	
 	public static Ride getRideByName(String name) {

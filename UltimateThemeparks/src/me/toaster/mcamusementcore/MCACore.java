@@ -4,7 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
+import org.bukkit.Location;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -13,25 +14,22 @@ import me.toaster.mcamusementcore.balloons.BalloonListener;
 import me.toaster.mcamusementcore.balloons.BalloonManager;
 import me.toaster.mcamusementcore.builder.BuilderListener;
 import me.toaster.mcamusementcore.commands.MCACommand;
-import me.toaster.mcamusementcore.entities.CEntityArmorstand;
 import me.toaster.mcamusementcore.entities.CEntityBat;
 import me.toaster.mcamusementcore.entities.CEntityManager;
 import me.toaster.mcamusementcore.entities.CEntityMinecart;
 import me.toaster.mcamusementcore.events.CEntityEvents;
 import me.toaster.mcamusementcore.events.MCAPlayerEvents;
 import me.toaster.mcamusementcore.events.WorldEvents;
-import me.toaster.mcamusementcore.flatrides.FRFrisbee;
+import me.toaster.mcamusementcore.flatrides.FRCarousel;
 import me.toaster.mcamusementcore.items.ItemListener;
 import me.toaster.mcamusementcore.queue.QueueListener;
 import me.toaster.mcamusementcore.queue.QueueObject;
 import me.toaster.mcamusementcore.rides.Ride;
-import me.toaster.mcamusementcore.rides.RollercoasterAuto;
-import me.toaster.mcamusementcore.rides.RollercoasterAuto.BlockDirection;
 import me.toaster.mcamusementcore.scheduler.ActionBarScheduler;
+import me.toaster.mcamusementcore.scheduler.RideManagementScheduler;
 import me.toaster.mcamusementcore.scheduler.WorldScheduler;
 import me.toaster.mcamusementcore.utils.InventoryUtils;
 import me.toaster.mcamusementcore.utils.nms.CustomEntityRegistry;
-import me.toaster.mcamusementcore.utils.nms.NMSUtils;
 
 /**
  * Main class for UltimateThemeParks...
@@ -39,7 +37,7 @@ import me.toaster.mcamusementcore.utils.nms.NMSUtils;
  *
  */
 public class MCACore extends JavaPlugin{
-	
+
 	/**
 	 * Features List:
 	 * 
@@ -81,65 +79,67 @@ public class MCACore extends JavaPlugin{
 	 * Dynamic Permissions
 	 * 
 	 */
-	
+
 	/**
 	 * Notes...
 	 * Don't always have the carts spawned... remove them and add them when necessary...
 	 * That will reduce every issue of un tracking / activation problems...
 	 * 
 	 */
-	
+
 	/*
 	 * The Entity object is not persistent, when you logout the chunk might get unloaded and the entity object will be released. When you log back in a new entity object will be created based on the saved state of the entity.
 If you want to keep track of entities across chunk reloads and server restarts you need to use the UUID of the entity.
 	 */
-	
-	
+
+
 	//TODO ADD TRASH TO THROW ITEMS TO
+
+	public static ArrayList<ArmorStand> time_keepers = new ArrayList<ArmorStand>();
 	
 	public static File QUEUE_DIR;
-	
+
 	public static JavaPlugin MCA_CORE;
-	
+
 	public final static String serverName = "McAmusement";
 	public final static String mainCmd = "mca";
 	public final static String serverMotto = "Live the magic in Minecraft!";
-	
+
 	public static ArrayList<BukkitTask> tasks = new ArrayList<BukkitTask>();
-	
+
 	public void onEnable() {
-		
+
 		MCA_CORE = this;
-		
+
 		this.makeDirectories();
 		this.initCustomEntities();
 		this.initCommands();
 		this.initEvents();
 		this.initRides();
 		this.initBalloons();
-		
+
 		this.spawnRides();
 		this.loadData();
-		
+
 		this.initSchedulers();
-		
-		
+
+
 		Bukkit.broadcastMessage(this.getDescription().getFullName()+" loaded successfully");
 	}
-	
+
 	public void onDisable() {
-		
+
 		/*
 		 * TODO CERTAIN CENTITYS WILL NOT CLEAR...
 		 */
-		
+
 		this.clearUnwantedEntities();
 		CEntityManager.twoFactorClear();
 		this.disableRides();
 		this.fixAllInventories();
 		this.saveData();
 	}
-	
+
 	public static boolean isTestServer() {
 		if(Bukkit.getServer().getIp().equals("")) {
 			return true;
@@ -147,7 +147,7 @@ If you want to keep track of entities across chunk reloads and server restarts y
 			return false;
 		}
 	}
-	
+
 	public void fixAllInventories() {
 		if(Bukkit.getServer().getOnlinePlayers().size()>0) {
 			for(Player all : Bukkit.getOnlinePlayers()) {
@@ -157,7 +157,7 @@ If you want to keep track of entities across chunk reloads and server restarts y
 			}
 		}
 	}
-	
+
 	public void initEvents() {
 		Bukkit.getPluginManager().registerEvents(new QueueListener(), this);
 		Bukkit.getPluginManager().registerEvents(new BalloonListener(), this);
@@ -167,74 +167,82 @@ If you want to keep track of entities across chunk reloads and server restarts y
 		Bukkit.getPluginManager().registerEvents(new WorldEvents(), this);
 		Bukkit.getPluginManager().registerEvents(new CEntityEvents(), this);
 	}
-	
+
 	public void initSchedulers() {
 		BalloonManager balloonManager = new BalloonManager();
 		balloonManager.runTaskTimer(this, 1, 1);
-		
+
 		WorldScheduler ws = new WorldScheduler();
-		ws.runTaskTimer(this, 5, 5);
-		
+		ws.runTaskTimer(this, 1, 1);
+
 		ActionBarScheduler actionBar = new ActionBarScheduler();
 		int delay = ActionBarScheduler.DELAY;
 		actionBar.runTaskTimer(this, delay, delay);
+		
+		//Every 2 seconds...
+		RideManagementScheduler rms = new RideManagementScheduler();
+		//rms.runTaskTimer(MCA_CORE, 0, 40);
 	}
-	
+
 	public void initCommands() {
 		getCommand("mca").setExecutor(new MCACommand());
 	}
-	
+
 	public void initRides() {
+		//Ride.rides.add(new FRCarousel(new Location(Bukkit.getWorld("newdl"),601,18.1,368)));
 		if(isTestServer()) {
-			Ride.rides.add(new FRFrisbee());
+			//Ride.rides.add(new FRFrisbee());
+			Ride.rides.add(new FRCarousel(new Location(Bukkit.getWorld("world"),99,90,506)));
 			//Ride.rides.add(new RollercoasterAuto(4, Material.LAPIS_BLOCK ,BlockDirection.WEST));
+		}else {
+			Ride.rides.add(new FRCarousel(new Location(Bukkit.getWorld("newdl"),601,18.1,368)));
 		}
 	}
-	
+
 	public void initBalloons() {
 		BalloonManager.loadBalloons();
 	}
-	
+
 	public void initCustomEntities() {
 		//NMSUtils.registerEntity(NMSUtils.Type.BAT, CEntityBat.class, false);
 		/*NMSUtils.registerCustomEntity(CEntityBat.class, CEntityBat::new, "cbat");
 		NMSUtils.registerCustomEntity(CEntityArmorstand.class, CEntityArmorstand::new, "carmorstand");
 		NMSUtils.registerCustomEntity(CEntityMinecart.class, CEntityMinecart::new, "cminecart");
-		*/
+		 */
 		//
 		CustomEntityRegistry.injectNewEntityTypes("cbat", "bat", CEntityBat.class, CEntityBat::new);
 		CustomEntityRegistry.injectNewEntityTypes("cminecart", "minecart", CEntityMinecart.class, CEntityMinecart::new);
 	}
-	
+
 	public void spawnRides() {
 		for(Ride r : Ride.rides) {
 			r.spawn();
 		}
 	}
-	
+
 	public void clearUnwantedEntities() {
 		for(Ride r : Ride.rides) {
 			if(r.isSpawned()) {
 				r.despawn();
 			}
 		}
-		
+
 		BalloonManager.clearAllBalloons();
 	}
-	
+
 	public void disableRides() {
 		for(Ride r : Ride.rides) {
 			r.despawn();
 		}
 	}
-	
+
 	public void saveData() {
 		//Queues
 		for(QueueObject q : QueueObject.queues) {
 			q.save();
 		}
 	}
-	
+
 	public void loadData() {
 		//Queues
 		for(File f : QUEUE_DIR.listFiles()) {
@@ -248,27 +256,27 @@ If you want to keep track of entities across chunk reloads and server restarts y
 				}
 			}
 		}
-		
-		
+
+
 	}
-	
+
 	public void makeDirectories() {
-		
+
 		if(!getDataFolder().exists()) {
 			getDataFolder().mkdir();
 		}
-		
+
 		File queues = new File(getDataFolder().getPath()+File.separator+"queues");
 		if(!rootFolderExists("queues")) {
 			queues.mkdir();
 		}
 		QUEUE_DIR = queues;
 	}
-	
+
 	public boolean rootFolderExists(String folderName) {
 		return new File(getDataFolder().getPath()+File.separator+folderName).exists();
 	}
-	
+
 	/*
 	 * TODO A constant schedule that checks if rides that are supposed to be spawned and all their trains are still spawned. If not
 	 * we need a way to handle this...

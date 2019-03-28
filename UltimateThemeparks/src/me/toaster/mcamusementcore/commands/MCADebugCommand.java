@@ -1,15 +1,20 @@
 package me.toaster.mcamusementcore.commands;
 
+import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import me.toaster.mcamusementcore.DebugMode;
+import me.toaster.mcamusementcore.MCACore;
 import me.toaster.mcamusementcore.entities.CEntity;
 import me.toaster.mcamusementcore.entities.CEntityInstance;
 import me.toaster.mcamusementcore.entities.CEntityManager;
@@ -31,6 +36,13 @@ public class MCADebugCommand extends CommandHandler{
 					for(Ride r : Ride.rides) {
 						p.sendMessage(r.getRideName());
 					}
+				}else if(args[1].equalsIgnoreCase("time")) {
+					System.out.println("Spawn time...");
+					ArmorStand as = (ArmorStand) p.getWorld().spawnEntity(p.getLocation(), EntityType.ARMOR_STAND);
+					as.setGravity(false);
+					as.setBasePlate(false);
+					as.setCustomNameVisible(true);
+					MCACore.time_keepers.add(as);
 				}else if(args[1].equalsIgnoreCase("print(cars)")){
 					String nameofride = args[2];
 					Ride r = Ride.getRideByName(nameofride);
