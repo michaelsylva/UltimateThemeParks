@@ -38,14 +38,22 @@ public class ShowScheduler extends BukkitRunnable{
 	@Override
 	public void run() {
 		if(!this.commands.isEmpty()) {
-			while(this.commands.peek().getType()!=ShowCommandType.WAIT) {
-				if(this.commands.peek()!=null) {
-					ShowCommand cmd = this.commands.remove();
+			if(this.commands.peek()!=null) {
+				ShowCommand cmd = this.commands.peek();
+				if(cmd instanceof ShowCommandWait) {
+					ShowCommandWait wait = (ShowCommandWait) cmd;
+					if(!wait.isDone()) {
+						wait.increase();
+						return;
+					}else {
+						this.commands.remove();
+					}
+				}else {
 					cmd.execute();
 					count++;
-				}else {
-					this.cancel();
 				}
+			}else {
+				this.cancel();
 			}
 		}else {
 			this.cancel();
