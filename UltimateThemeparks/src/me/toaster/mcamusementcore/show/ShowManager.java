@@ -36,10 +36,22 @@ public class ShowManager {
 		p.sendMessage(ChatColor.GREEN+"You have began editting the show " + ChatColor.BOLD+s.getShowName());
 	}
 	
+	public static void getHelp(Player p, String command) {
+		if(command.equalsIgnoreCase("firework")) {
+			p.sendMessage(ChatColor.RED+"usage: firework <color> <power> <type> <twinkle> <trail> [velx] [vely] [velz] [detonate]");
+		}else if(command.equalsIgnoreCase("wait")) {
+			p.sendMessage(ChatColor.RED+"usage: wait <wait_ticks>");
+		}
+	}
+	
 	public static void makeCommand(Player p, String message) {
 		if(isEditting(p)) {
 			Show s = getEditting(p);
 			String[] args = message.split(" ");
+			if(args.length==1) {
+				getHelp(p,args[0]);
+				return;
+			}
 			if(args[0].equalsIgnoreCase("firework")) {
 				ShowCommandFirework firework = new ShowCommandFirework(p.getLocation(),args);
 				boolean b = firework.parse();
@@ -51,6 +63,15 @@ public class ShowManager {
 				}
 			}else if(args[0].equalsIgnoreCase("fountain")) {
 				
+			}else if(args[0].equalsIgnoreCase("wait")){
+				ShowCommandWait wait = new ShowCommandWait(args);
+				boolean b = wait.parse();
+				if(!b) {
+					p.sendMessage(ChatColor.RED + "Could not add command. Invalid format...");
+				}else {
+					s.addCommand(wait);
+					p.sendMessage(ChatColor.GREEN+"Added!");
+				}
 			}else {
 				p.sendMessage(ChatColor.RED+"Unknown command type...");
 			}

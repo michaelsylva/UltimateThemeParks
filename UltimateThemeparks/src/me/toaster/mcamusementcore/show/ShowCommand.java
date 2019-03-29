@@ -20,6 +20,8 @@ public abstract class ShowCommand {
 	
 	public abstract void execute();
 	
+	public abstract boolean hasParsed();
+	
 	public abstract boolean parse();
 	
 }

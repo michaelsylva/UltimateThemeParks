@@ -35,7 +35,8 @@ public abstract class Ride{
 	private UUID SESSION_ID;
 	
 	public enum RideType {
-		ROLLERCOASTER,
+		ROLLERCOASTER_AUTO,
+		ROLLERCOASTER_NLTC,
 		FLATRIDE;
 	}
 	

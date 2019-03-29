@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -22,9 +23,12 @@ import me.toaster.mcamusementcore.events.MCAPlayerEvents;
 import me.toaster.mcamusementcore.events.WorldEvents;
 import me.toaster.mcamusementcore.flatrides.FRCarousel;
 import me.toaster.mcamusementcore.items.ItemListener;
+import me.toaster.mcamusementcore.network.MCANetworkCore;
 import me.toaster.mcamusementcore.queue.QueueListener;
 import me.toaster.mcamusementcore.queue.QueueObject;
 import me.toaster.mcamusementcore.rides.Ride;
+import me.toaster.mcamusementcore.rides.RollercoasterAuto;
+import me.toaster.mcamusementcore.rides.RollercoasterAuto.BlockDirection;
 import me.toaster.mcamusementcore.scheduler.ActionBarScheduler;
 import me.toaster.mcamusementcore.scheduler.RideManagementScheduler;
 import me.toaster.mcamusementcore.scheduler.WorldScheduler;
@@ -122,7 +126,7 @@ If you want to keep track of entities across chunk reloads and server restarts y
 		this.loadData();
 
 		this.initSchedulers();
-
+		//MCANetworkCore.registerChannels();
 
 		Bukkit.broadcastMessage(this.getDescription().getFullName()+" loaded successfully");
 	}
@@ -193,7 +197,7 @@ If you want to keep track of entities across chunk reloads and server restarts y
 		if(isTestServer()) {
 			//Ride.rides.add(new FRFrisbee());
 			Ride.rides.add(new FRCarousel(new Location(Bukkit.getWorld("world"),99,90,506)));
-			//Ride.rides.add(new RollercoasterAuto(4, Material.LAPIS_BLOCK ,BlockDirection.WEST));
+			Ride.rides.add(new RollercoasterAuto(4, Material.LAPIS_BLOCK ,BlockDirection.WEST));
 		}else {
 			Ride.rides.add(new FRCarousel(new Location(Bukkit.getWorld("newdl"),601,18.1,368)));
 		}

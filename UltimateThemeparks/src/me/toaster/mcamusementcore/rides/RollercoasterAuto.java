@@ -39,7 +39,6 @@ import net.minecraft.server.v1_13_R2.Vector3f;
  * @author Michael Sylva
  *
  */
-@Deprecated
 public class RollercoasterAuto extends Ride{
 
 	int length;
@@ -65,7 +64,7 @@ public class RollercoasterAuto extends Ride{
 		this.train = new Train(length, TrainType.MODEL);
 		this.map = new TrackMap(this.backLoc);
 		
-		setRideType(RideType.ROLLERCOASTER);
+		setRideType(RideType.ROLLERCOASTER_AUTO);
 		setRideName("Rollercoaster");
 	}
 
@@ -79,6 +78,7 @@ public class RollercoasterAuto extends Ride{
 			if(train.type==TrainType.MODEL) {
 				car = new ModelCar(new CEntityArmorstand(l,ItemUtils.getItemWithData(Material.DIAMOND_HOE,(short)16)));
 			}else {
+				//l.setYaw(180);
 				car = new MinecartCar(new CEntityMinecart(l.clone().add(0, 0.75, 0)));
 			}
 			//this.entities.add(car);
@@ -569,12 +569,18 @@ public class RollercoasterAuto extends Ride{
 						CEntityArmorstand model = (CEntityArmorstand) ce;
 						float pitch = MathUtils.getLookAtPitch(loc, lookAt);
 						//float currPitch = model.get
-						model.setHeadPose(new Vector3f(pitch,0.0f,0.0f));
+						model.setHeadPose(new Vector3f(pitch,loc.getYaw(),loc.getYaw()));
+						System.out.println("yaw: " + loc.getYaw());
+						loc.setPitch(pitch);
+					}else if(ce instanceof CEntityMinecart) {
+						CEntityMinecart mc = (CEntityMinecart) ce;
+						float pitch = MathUtils.getLookAtPitch(loc, lookAt);
+						loc.setPitch(pitch);
 					}
 
 
 					//set position
-					ce.setPositionRotation(loc);
+					ce.setPositionRotation(loc.clone().add(0, 4, 0));
 					
 					//update positions with speed
 					train.update();

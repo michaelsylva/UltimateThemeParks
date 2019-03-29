@@ -2,14 +2,11 @@ package me.toaster.mcamusementcore.show;
 
 public class ShowCommandWait extends ShowCommand{
 
-	ShowCommandType type;
-	String[] data;
 	int TICKS = 0;
-	int wait_ticks;
+	Integer wait_ticks;
 	
 	public ShowCommandWait(String[] data) {
 		super(ShowCommandType.WAIT, data);
-		this.wait_ticks = Integer.parseInt(data[0]);
 	}
 
 	@Override
@@ -27,11 +24,25 @@ public class ShowCommandWait extends ShowCommand{
 		}
 		return false;
 	}
+	
+	public void reset() {
+		this.TICKS = 0;
+	}
 
 	@Override
 	public boolean parse() {
-		// TODO Auto-generated method stub
-		return false;
+		try {
+			this.wait_ticks = Integer.parseInt(this.getData()[1]);
+			return true;
+		}catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Override
+	public boolean hasParsed() {
+		return this.wait_ticks!=null;
 	}
 
 }

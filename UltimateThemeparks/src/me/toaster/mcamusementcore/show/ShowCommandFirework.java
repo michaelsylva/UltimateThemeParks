@@ -53,6 +53,7 @@ public class ShowCommandFirework extends ShowCommand{
 		}
 	}
 
+	@Override
 	public boolean hasParsed() {
 		if(this.effect!=null && this.l!=null) {
 			return true;

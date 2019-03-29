@@ -3,6 +3,10 @@ package me.toaster.mcamusementcore.show;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -14,6 +18,8 @@ public class ShowScheduler extends BukkitRunnable{
 	BukkitTask task;
 	int count = 0;
 	Queue<ShowCommand> commands;
+	ArmorStand as;
+	int TICKS = 0;
 
 	public ShowScheduler(Show show) {
 		this.show = show;
@@ -25,6 +31,8 @@ public class ShowScheduler extends BukkitRunnable{
 	public void start() {
 		ShowManager.addRunningShow(this);
 		this.task = this.runTaskTimer(MCACore.MCA_CORE, 1, 1);
+		as = (ArmorStand) Bukkit.getWorlds().get(0).spawnEntity(new Location(Bukkit.getWorlds().get(0), 120, 91, 493), EntityType.ARMOR_STAND);
+		as.setCustomNameVisible(true);
 	}
 
 	public void stop() {
@@ -37,19 +45,24 @@ public class ShowScheduler extends BukkitRunnable{
 
 	@Override
 	public void run() {
+		TICKS++;
+		as.setCustomName(TICKS+"");
 		if(!this.commands.isEmpty()) {
 			if(this.commands.peek()!=null) {
 				ShowCommand cmd = this.commands.peek();
+				//Bukkit.broadcastMessage(cmd+"");
 				if(cmd instanceof ShowCommandWait) {
 					ShowCommandWait wait = (ShowCommandWait) cmd;
 					if(!wait.isDone()) {
 						wait.increase();
 						return;
 					}else {
+						wait.reset();
 						this.commands.remove();
 					}
 				}else {
 					cmd.execute();
+					this.commands.remove();
 					count++;
 				}
 			}else {
